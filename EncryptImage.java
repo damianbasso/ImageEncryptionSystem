@@ -123,8 +123,6 @@ public class EncryptImage {
         }
         System.out.println("OP G IS " + g);
         System.out.println("OP G mod IS " + (g % this.x));
-        
-
 
         int c = 0;   
         int index = 0;
@@ -198,12 +196,14 @@ public class EncryptImage {
     }
 
     public static void main(String args[]) throws IOException {
-        File file = new File("lime.png");
-        File text = new File("Communism.txt");
+        System.out.println((char)33);
+        
+        // File file = new File("lime.png");
+        // File text = new File("Communism.txt");
 
-        EncryptImage cs = new EncryptImage(file, text, "limeCommunism");
+        // EncryptImage cs = new EncryptImage(file, text, "limeCommunism");
     
-        File cipherImg = new File("EncryptedlimeCommunism.png");
-        DecryptImage dddd = new DecryptImage(cipherImg);
+        // File cipherImg = new File("EncryptedlimeCommunism.png");
+        // DecryptImage dddd = new DecryptImage(cipherImg);
     }
 }

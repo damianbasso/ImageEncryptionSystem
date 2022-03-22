@@ -38,9 +38,28 @@ public class DecryptImage {
             Color curr = colors[i];
             sum += curr.getRed()*25 + curr.getGreen()*5 + curr.getBlue()*1;
         }
+
+        int span = sum % this.x; 
         System.out.println("Span is " + (sum%this.x));
 
-        return "hicck";
+        int index = this.x;
+        int currSum = 0;
+        String message = "";
+        while(index < this.colors.length) {
+            if((index-this.x) %span == 0) {
+                int val = currSum%256;
+                System.out.println(val);
+                System.out.println(message);
+                message += (char)val;
+            }
+            Color curColor = colors[index];
+            currSum += 25*curColor.getRed() + 5*curColor.getGreen() + 1*curColor.getBlue();
+            index++;
+        }
+
+
+        // System.out.println("message is = " + message);
+        return message;
     }
 
 }
