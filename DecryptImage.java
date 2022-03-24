@@ -13,6 +13,7 @@ public class DecryptImage {
     public DecryptImage(BufferedImage cipherImage) throws IOException {
         parseImage(cipherImage);
         decode();
+        // System.out.println(decode());
     }
 
     public DecryptImage(File file) throws IOException {
@@ -45,12 +46,13 @@ public class DecryptImage {
         int index = this.x;
         int currSum = 0;
         String message = "";
+        
         while(index < this.colors.length) {
             if((index-this.x) %span == 0) {
                 int val = currSum%256;
-                System.out.println(val);
-                System.out.println(message);
+                // System.out.println(val);
                 message += (char)val;
+                currSum = 0;
             }
             Color curColor = colors[index];
             currSum += 25*curColor.getRed() + 5*curColor.getGreen() + 1*curColor.getBlue();
@@ -62,4 +64,10 @@ public class DecryptImage {
         return message;
     }
 
+    public static void main(String args[]) throws IOException {
+        File file = new File("EncryptedlimeCommunism.png");
+        BufferedImage bi = ImageIO.read(file);
+        DecryptImage di = new DecryptImage(bi);
+        // EncryptImage cs = new EncryptImage(file, text, "limeCommunism");
+    }
 }

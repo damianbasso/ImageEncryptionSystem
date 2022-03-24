@@ -1,4 +1,5 @@
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Random;
 import java.awt.Color;
 import javax.imageio.ImageIO;
@@ -27,6 +28,7 @@ public class EncryptImage {
         }
     }
 
+    //Dont know accuracy need to test
     private static int getLength(File file) throws IOException {
         FileReader fr= new FileReader(file);   //Creation of File Reader object
         BufferedReader br=new BufferedReader(fr);  //Creation of BufferedReader object
@@ -35,28 +37,20 @@ public class EncryptImage {
         {
             count++;
         }
+        System.out.println("MMMMMMMM = " + count);
         return count;
     }
 
     private void encrypt(File file) throws IOException {
-        FileReader fr= new FileReader(file);   //Creation of File Reader object
-        BufferedReader br=new BufferedReader(fr);  //Creation of BufferedReader object
+        // FileReader fr= new FileReader(file);   //Creation of File Reader object
+        // BufferedReader br=new BufferedReader(fr);  //Creation of BufferedReader object
 
         // Calculates the span, which is how many characters
 
         // Why does it break when I do /(getLength(file) - this.x)
         // I think that shit should be correct
         int span = (this.colors.length -this.x) / (getLength(file)); 
-        // System.out.println("span = " + span);
-        // System.out.println("colorslength = " + this.colors.length);
-        // System.out.println("this.x = " + this.x);
-        // System.out.println("lenth = " + getLength(file));
-
-        // int span = (this.colors.length -this.x) / (getLength(file)-this.x); 
-        
-        // Sets the first row of the image to contain a key which gives
-        // how many pixels each character of the message is contained over
-
+       
         // Gets the initial value represented in the first row of the image
         int size = 0;
         for (int i =0; i< this.x; i++) {
@@ -121,61 +115,85 @@ public class EncryptImage {
             Color curr = colors[i];
             g += curr.getRed()*25 + curr.getGreen()*5 + curr.getBlue()*1;
         }
-        System.out.println("OP G IS " + g);
-        System.out.println("OP G mod IS " + (g % this.x));
 
-        int c = 0;   
         int index = 0;
         rand = new Random(444478);
         
-        // Reads through every character
-        while((c = br.read()) != -1)         //Read char by Char
-        {   
+        try (InputStream in = new FileInputStream(file);
+            Reader reader = new InputStreamReader(in, Charset.defaultCharset());
+            // buffer for efficiency
+            Reader buffer = new BufferedReader(reader)) {
+        
+            int c = 0;
+            while ((c = reader.read()) != -1) {
+                size = 0;
+                for (int i = this.x + index*span; i< this.x + (index+1)*span;i++) {
+                    Color curr = colors[i];
+                    size += 25*curr.getRed() + 5*curr.getGreen() + curr.getBlue();
+                }
+                
+                // mod 256 as we are encoding on 256 to use ASCII representation of nums
+                size %= 256;
+                // converts read character to its int value to get diff
+                diff = size - (int)c;
+                iterator = -1;
+                if (diff < 0) {
+                    iterator = 1;
+                }
+    
+                while(diff != 0) {
+    
+                    int select = this.x + index*span+rand.nextInt(span);
+                    targ = this.colors[select];
+                    int newShade;
+    
+                    // Picks which channel to update depending on value of diff
+                    if (Math.abs(diff) >= 25) {
+                        newShade = targ.getRed() + iterator;
+                        if (newShade>=0 && newShade<256) {
+                            this.colors[select] = new Color(newShade, targ.getGreen(), targ.getBlue());
+                            diff += iterator*25;
+                        }
+                    }
+                    else if (Math.abs(diff) >= 5) {
+                        newShade = targ.getGreen() + iterator;
+                        if (newShade>=0 && newShade<256) {
+                            this.colors[select] = new Color(targ.getRed(), newShade, targ.getBlue());
+                            diff += iterator*5;
+                        }
+                    }
+                    else {
+                        newShade = targ.getBlue() + iterator;
+                        if (newShade>=0 && newShade<256) {
+                            this.colors[select] = new Color(targ.getRed(), targ.getGreen(), newShade);
+                            diff += iterator*1;
+                        }
+                    }
+                }
+                size = 0;
+                for (int i = this.x + index*span; i< this.x + (index+1)*span;i++) {
+                    Color curr = colors[i];
+                    size += 25*curr.getRed() + 5*curr.getGreen() + curr.getBlue();
+                }
+                // mod 256 as we are encoding on 256 to use ASCII representation of nums
+                size %= 256;
+                // System.out.println("    " + (char)size);
+    
+                index++;
+            }
+            System.out.println("NNNNNNN = " + index);
+        }
+        for (int p =0;p<50;p++) {
             size = 0;
-            for (int i = this.x + index*span; this.x + i<(index+1)*span;i++) {
+            for (int i = this.x + p*span; i< this.x + (p+1)*span;i++) {
                 Color curr = colors[i];
                 size += 25*curr.getRed() + 5*curr.getGreen() + curr.getBlue();
             }
             // mod 256 as we are encoding on 256 to use ASCII representation of nums
             size %= 256;
-            // converts read character to its int value to get diff
-            diff = size - (int)c;
-            iterator = -1;
-            if (diff < 0) {
-                iterator = 1;
-            }
+            // System.out.println("ITS    " + (char)size);
 
-            while(diff != 0) {
-                int select = this.x + index*span+rand.nextInt(span);
-                targ = this.colors[select];
-                int newShade;
-
-                // Picks which channel to update depending on value of diff
-                if (Math.abs(diff) >= 25) {
-                    newShade = targ.getRed() + iterator;
-                    if (newShade>=0 && newShade<256) {
-                        this.colors[select] = new Color(newShade, targ.getGreen(), targ.getBlue());
-                        diff += iterator*25;
-                    }
-                }
-                else if (Math.abs(diff) >= 5) {
-                    newShade = targ.getGreen() + iterator;
-                    if (newShade>=0 && newShade<256) {
-                        this.colors[select] = new Color(targ.getRed(), newShade, targ.getBlue());
-                        diff += iterator*5;
-                    }
-                }
-                else {
-                    newShade = targ.getBlue() + iterator;
-                    if (newShade>=0 && newShade<256) {
-                        this.colors[select] = new Color(targ.getRed(), targ.getGreen(), newShade);
-                        diff += iterator*1;
-                    }
-                }
-                }
-                index++;
         }
-        br.close();
         System.out.println("fin");
     }
 
@@ -196,14 +214,8 @@ public class EncryptImage {
     }
 
     public static void main(String args[]) throws IOException {
-        System.out.println((char)33);
-        
-        // File file = new File("lime.png");
-        // File text = new File("Communism.txt");
-
-        // EncryptImage cs = new EncryptImage(file, text, "limeCommunism");
-    
-        // File cipherImg = new File("EncryptedlimeCommunism.png");
-        // DecryptImage dddd = new DecryptImage(cipherImg);
+        File file = new File("lime.png");
+        File text = new File("Communism.txt");
+        EncryptImage cs = new EncryptImage(file, text, "limeCommunism");
     }
 }
