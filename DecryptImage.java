@@ -1,6 +1,7 @@
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.awt.Color;
 import javax.imageio.ImageIO;
 
@@ -10,14 +11,23 @@ public class DecryptImage {
     int x;
     int y;
 
-    public DecryptImage(BufferedImage cipherImage) throws IOException {
+    public DecryptImage(BufferedImage cipherImage, String saveAs) throws IOException {
         parseImage(cipherImage);
-        decode();
-        // System.out.println(decode());
+        // decode();
+        PrintWriter out = new PrintWriter("outputText/" + saveAs+".txt");
+
+        String msg = decode();
+        out.print(msg);
+        out.close();
+        System.out.println(msg);
     }
 
     public DecryptImage(File file) throws IOException {
         this(ImageIO.read(file));
+    }
+
+    public DecryptImage(File file, String saveAs) throws IOException {
+        this(ImageIO.read(file),saveAs);
     }
     
 
@@ -50,7 +60,7 @@ public class DecryptImage {
         while(index < this.colors.length) {
             if((index-this.x) %span == 0) {
                 int val = currSum%256;
-                // System.out.println(val);
+                // System.out.println((char)val);
                 message += (char)val;
                 currSum = 0;
             }
@@ -65,9 +75,9 @@ public class DecryptImage {
     }
 
     public static void main(String args[]) throws IOException {
-        File file = new File("EncryptedlimeCommunism.png");
+        File file = new File("outputImages/Encrypted10thouDragon3.png");
         BufferedImage bi = ImageIO.read(file);
-        DecryptImage di = new DecryptImage(bi);
+        DecryptImage di = new DecryptImage(bi, "output100thouDragon3");
         // EncryptImage cs = new EncryptImage(file, text, "limeCommunism");
     }
 }

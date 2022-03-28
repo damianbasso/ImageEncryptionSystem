@@ -1,0 +1,110 @@
+while(diff != 0) {
+                    // System.out.println("ohno" + diff);
+                    int select = rand.nextInt(span);
+                    targ = this.colors[this.x + index*span + select];
+                    int newShade;
+    
+                    // Picks which channel to update depending on value of diff
+                    if (Math.abs(diff) >= 25) {
+                        int loop = 0;
+                        while(true) {
+                            newShade = targ.getRed() + iterator;
+                            if (newShade>=0 && newShade<256) {
+                                this.colors[select] = new Color(newShade, targ.getGreen(), targ.getBlue());
+                                diff += iterator*25;
+                                break;
+                            }
+                            // If the shade can't be increased due to RGB boundary, a new pixel is found
+                            else {
+                                select++;
+                                select%=span;
+                                targ=this.colors[this.x + index*span + select];
+                                loop++;
+                                // If we have looped through all the pixels and none are suitable,
+                                // the RGB value is instead subtracted.
+                                if (loop == span) {
+                                    newShade = targ.getRed() - iterator*4;
+                                    this.colors[select] = new Color(newShade, targ.getGreen(), targ.getBlue());
+                                    diff -= iterator*4*25;
+                                    diff %= 256; 
+                                    if (diff > 128) {
+                                        diff -= 256;
+                                    }
+                                    iterator = -1;
+                                    if (diff < 0) {
+                                        iterator = 1;
+                                    }
+                                    break;
+                                }
+                            }
+                        } 
+                    }
+                    else if (Math.abs(diff) >= 5) {
+                        int loop = 0;
+                        while(true) {
+                            newShade = targ.getGreen() + iterator;
+                            if (newShade>=0 && newShade<256) {
+                                this.colors[select] = new Color(targ.getRed(), newShade, targ.getBlue());
+                                diff += iterator*5;
+                                break;
+                            }
+                            // If the shade can't be increased due to RGB boundary, a new pixel is found
+                            else {
+                                select++;
+                                select%=span;
+                                loop++;
+                                targ=this.colors[this.x + index*span + select];
+                                // If we have looped through all the pixels and none are suitable,
+                                // the RGB value is instead subtracted.
+                                if (loop == span) {
+                                    newShade = targ.getGreen() - iterator*4;
+                                    this.colors[select] = new Color(targ.getRed(), newShade, targ.getBlue());
+                                    diff -= iterator*4*5;
+                                    diff %= 256; 
+                                    if (diff > 128) {
+                                        diff -= 256;
+                                    }
+                                    iterator = -1;
+                                    if (diff < 0) {
+                                        iterator = 1;
+                                    }
+                                    break;
+                                }
+                            }
+                        } 
+                    }
+                    else {
+                        int loop = 0;
+                        while(true) {
+                            newShade = targ.getBlue() + iterator;
+                            if (newShade>=0 && newShade<256) {
+                                this.colors[select] = new Color(targ.getRed(), targ.getGreen(), newShade);
+                                diff += iterator*1;
+                                break;
+                            }
+                            // If the shade can't be increased due to RGB boundary, a new pixel is found
+                            else {
+                                select++;
+                                loop++;
+                                select%=span;
+                                targ=this.colors[this.x + index*span + select];
+                                // If we have looped through all the pixels and none are suitable,
+                                // the RGB value is instead subtracted.
+                                if (loop == span) {
+                                    newShade = targ.getBlue() - iterator*4;
+                                    this.colors[select] = new Color(targ.getRed(), targ.getGreen(), newShade);
+                                    diff -= iterator*4;
+                                    diff %= 256; 
+                                    if (diff > 128) {
+                                        diff -= 256;
+                                    }
+                                    iterator = -1;
+                                    if (diff < 0) {
+                                        iterator = 1;
+                                    }
+                                    break;
+                                }
+                            }
+                        } 
+                    }
+                }	
