@@ -75,9 +75,9 @@ public class DecryptImage {
     }
 
     public static void main(String args[]) throws IOException {
-        File file = new File("outputImages/Encrypted10thouDragon3.png");
+        File file = new File("outputImages/EncryptedtestDrag.png");
         BufferedImage bi = ImageIO.read(file);
-        DecryptImage di = new DecryptImage(bi, "output100thouDragon3");
+        DecryptImage di = new DecryptImage(bi, "testDragText");
         // EncryptImage cs = new EncryptImage(file, text, "limeCommunism");
     }
 }
