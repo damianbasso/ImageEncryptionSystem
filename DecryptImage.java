@@ -58,10 +58,15 @@ public class DecryptImage {
         String message = "";
         
         while(index < this.colors.length) {
-            if((index-this.x) %span == 0) {
+            // if(index-this.x > 500) {
+            //     return "p";
+            // }
+            if((index-this.x) %span == 0 && (index - this.x) != 0) {
                 int val = currSum%256;
                 // System.out.println((char)val);
                 message += (char)val;
+                // System.out.println(val);
+                // System.out.println(message);
                 currSum = 0;
             }
             Color curColor = colors[index];
