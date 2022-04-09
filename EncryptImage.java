@@ -21,6 +21,8 @@ public class EncryptImage {
     private void parseImage(BufferedImage image) throws IOException {
         this.x = image.getWidth();
         this.y = image.getHeight();
+        
+        System.out.println(" dimensions = " + this.x + "  " + this.y);
         this.colors = new Color[this.x*this.y];
         for (int y = 0; y< this.y; y++) {
             for (int x = 0; x <this.x; x++) {
@@ -39,7 +41,6 @@ public class EncryptImage {
         {
             count++;
         }
-        System.out.println("MMMMMMMM = " + count);
         return count;
     }
 
@@ -51,6 +52,8 @@ public class EncryptImage {
 
         // Why does it break when I do /(getLength(file) - this.x)
         // I think that shit should be correct
+
+        
         int span = (int)((this.colors.length -this.x) / (getLength(file))); 
        
         System.out.println("span = " + span);
@@ -64,7 +67,9 @@ public class EncryptImage {
             Color curr = colors[i];
             // Treats the 3 channels as base 5 values
             // i.e, rgb(17,12,8) = 17*5^25 + 12*5^1 + 8*5^0
-            size += curr.getRed()*25 + curr.getGreen()*5 + curr.getBlue()*1;
+            // size += curr.getRed()*25 + curr.getGreen()*5 + curr.getBlue()*1;
+            size += curr.getRed()*i + curr.getGreen()*i + curr.getBlue()*i;
+            
         }
 
         // mod the size by the total width
@@ -87,42 +92,63 @@ public class EncryptImage {
         Color targ;
 
         Random rand = new Random(12323424);
+        targ = this.colors[Math.abs(diff)];
         while(diff != 0) {
             // Picks a random pixel in the first row
-            int select = rand.nextInt(this.x);
-            targ = this.colors[select];
+            // int select = rand.nextInt(this.x);
             int newShade;
-            // Picks which channel to update depending on value of diff
-            if (Math.abs(diff) >= 25) {
+            // int channel = rand.nextInt(3);
+
+            if (targ.getRed() + iterator < 255 && targ.getRed() + iterator > 0) {
                 newShade = targ.getRed() + iterator;
-                if (newShade>=0 && newShade<256) {
-                    this.colors[select] = new Color(newShade, targ.getGreen(), targ.getBlue());
-                    diff += iterator*25;
-                }
+                this.colors[Math.abs(diff)] = new Color(newShade,targ.getGreen(),targ.getBlue());
+                diff += iterator * Math.abs(diff);
             }
-            else if (Math.abs(diff) >= 5) {
+            else if (targ.getGreen() + iterator < 255 && targ.getGreen() + iterator > 0) {
                 newShade = targ.getGreen() + iterator;
-                if (newShade>=0 && newShade<256) {
-                    this.colors[select] = new Color(targ.getRed(), newShade, targ.getBlue());
-                    diff += iterator*5;
-                }
+                this.colors[Math.abs(diff)] = new Color(targ.getRed(), newShade,targ.getBlue());
+                diff += iterator * Math.abs(diff);
+            }
+            else if (targ.getBlue() + iterator < 255 && targ.getBlue() + iterator > 0){
+                newShade = targ.getBlue() + iterator;
+                this.colors[Math.abs(diff)] = new Color(targ.getRed(),targ.getGreen(),newShade);
+                diff += iterator * Math.abs(diff);
             }
             else {
-                newShade = targ.getBlue() + iterator;
-                if (newShade>=0 && newShade<256) {
-                    this.colors[select] = new Color(targ.getRed(), targ.getGreen(), newShade);
-                    diff += iterator*1;
+                System.out.print(diff);
+                iterator*=-1;
+                if (diff <0) {
+                    diff += this.x;
                 }
+                else {
+                    diff -= this.x;
+                }
+                // diff = this.x -diff;
             }
+            // Picks which channel to update depending on value of diff
+            // if (Math.abs(diff) >= 25) {
+            //     newShade = targ.getRed() + iterator;
+            //     if (newShade>=0 && newShade<256) {
+            //         this.colors[select] = new Color(newShade, targ.getGreen(), targ.getBlue());
+            //         diff += iterator*25;
+            //     }
+            // }
+            // else if (Math.abs(diff) >= 5) {
+            //     newShade = targ.getGreen() + iterator;
+            //     if (newShade>=0 && newShade<256) {
+            //         this.colors[select] = new Color(targ.getRed(), newShade, targ.getBlue());
+            //         diff += iterator*5;
+            //     }
+            // }
+            // else {
+            //     newShade = targ.getBlue() + iterator;
+            //     if (newShade>=0 && newShade<256) {
+            //         this.colors[select] = new Color(targ.getRed(), targ.getGreen(), newShade);
+            //         diff += iterator*1;
+            //     }
+            // }
         }
 
-        // Check first row value is correct
-        int g = 0;
-        for (int i =0; i<this.x; i++) {
-            Color curr = colors[i];
-            g += curr.getRed()*25 + curr.getGreen()*5 + curr.getBlue()*1;
-        }
-        System.out.println("G IS " + g%this.x);
 
         int index = 0;
         rand = new Random(444478);
@@ -136,6 +162,8 @@ public class EncryptImage {
             int c = 0;
             int ind = 0;
             while ((c = reader.read()) != -1) {
+
+                // System.out.println(ind);
                 // System.out.println("   " + c);
 
                 // if (ind > 750) {
@@ -163,19 +191,19 @@ public class EncryptImage {
     
                 // System.out.println((char)c);
                 while(diff != 0) {
-                    if (c == 115) {
-                        // System.out.println("ohno" + diff);
-                        size = 0;
-                        for (int i = this.x + index*span; i< this.x + (index+1)*span;i++) {
-                            Color curr = colors[i];
-                            size += 25*curr.getRed() + 5*curr.getGreen() + curr.getBlue();
-                        }
+                    // if (c == 115) {
+                    // System.out.println("ohno" + diff);
+                    //     size = 0;
+                    //     for (int i = this.x + index*span; i< this.x + (index+1)*span;i++) {
+                    //         Color curr = colors[i];
+                    //         size += 25*curr.getRed() + 5*curr.getGreen() + curr.getBlue();
+                    //     }
                         
-                        // mod 256 as we are encoding on 256 to use ASCII representation of nums
-                        size %= 256;
-                        // System.out.println("SIZE IS " + size);
+                    //     // mod 256 as we are encoding on 256 to use ASCII representation of nums
+                    //     size %= 256;
+                    //     // System.out.println("SIZE IS " + size);
                     
-                    }
+                    // }
                     int select = rand.nextInt(span);
                     targ = this.colors[this.x + index*span + select];
                     int newShade;
@@ -205,7 +233,7 @@ public class EncryptImage {
                                 // the RGB value is instead subtracted.
                                 // System.out.println("ggg " + loop + "   " + span);
 
-                                if (loop == span - 1) {
+                                if (loop >= span - 1) {
                                     // System.out.println("CHIPSANDSALAD");
 
                                     // System.out.print("loop=span");
@@ -263,7 +291,7 @@ public class EncryptImage {
 
                                 // If we have looped through all the pixels and none are suitable,
                                 // the RGB value is instead subtracted.
-                                if (loop == span-1) {
+                                if (loop >= span-1) {
                                     // System.out.println("CHIPSANDDIP");
                                     // targ=this.colors[this.x + index*span + select];
                                     newShade = targ.getGreen() - iterator*4;
@@ -317,20 +345,26 @@ public class EncryptImage {
                             // System.out.println("cop");
                             newShade = targ.getBlue() + iterator;
                             if (newShade>=0 && newShade<256) {
+                                // System.out.println("tp
+
                                 this.colors[this.x + index*span + select] = new Color(targ.getRed(), targ.getGreen(), newShade);
                                 diff += iterator*1;
                                 break;
                             }
                             // If the shade can't be increased due to RGB boundary, a new pixel is found
                             else {
+
                                 select++;
                                 select%=span;
                                 loop++;
                                 targ=this.colors[this.x + index*span + select];
 
+                                // System.out.println("lp " + loop + "   " + span);
+
                                 // If we have looped through all the pixels and none are suitable,
                                 // the RGB value is instead subtracted.
-                                if (loop == span -1) {
+                                if (loop >= span -1) {
+                                    // System.out.println("gaud " + loop + "    " + span);
                                     newShade = targ.getBlue() - iterator*4;
                                     this.colors[this.x + index*span + select] = new Color(targ.getRed(), targ.getGreen(), newShade);
                                     diff -= iterator*4;
@@ -346,7 +380,8 @@ public class EncryptImage {
                                     break;
                                 }
                                 else {
-                                    select%=span;
+
+                                    // select%=span;
                                     targ=this.colors[this.x + index*span + select];    
                                 }
                             }
@@ -372,12 +407,6 @@ public class EncryptImage {
             }
             // System.out.println("NNNNNNN = " + index);
         }
-        g = 0;
-        for (int i =0; i<this.x; i++) {
-            Color curr = colors[i];
-            g += curr.getRed()*25 + curr.getGreen()*5 + curr.getBlue()*1;
-        }
-        System.out.println("G2 IS " + g%this.x);
         for (int p =0;p<50;p++) {
             size = 0;
             for (int i = this.x + p*span; i< this.x + (p+1)*span;i++) {
@@ -420,7 +449,7 @@ public class EncryptImage {
 
     public static void main(String args[]) throws IOException {
         File file = new File("sampleInput/HighResDragon.png");
-        File text = new File("sampleInput/100thou.txt");
-        EncryptImage cs = new EncryptImage(file, text, "testDrag");
+        File text = new File("sampleInput/1598400ASCII.txt");
+        EncryptImage cs = new EncryptImage(file, text, "ASCIIDragon");
     }
 }
