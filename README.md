@@ -1,4 +1,4 @@
-# Encrypting Strings into Images: A Picture tells x*(y-1)
+# Encrypting Strings into Images: A Picture Tells x*(y-1) Characters
 Project for COMP6841 Cyber Security 'Something Awesome' project by Damian Basso.
 
 For this project, I have designed an encryption system built on writing encoded messages into images.
