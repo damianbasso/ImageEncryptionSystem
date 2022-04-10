@@ -14,13 +14,8 @@ public class DecryptImage {
 
     public DecryptImage(BufferedImage cipherImage, String saveAs) throws IOException {
         parseImage(cipherImage);
-        // decode();
-        // PrintWriter out = new PrintWriter("outputText/" + saveAs+".txt");
-
-        String msg = decode(saveAs);
-        // out.print(msg);
-        // out.close();
-    }
+        decode(saveAs);
+        }
 
     public DecryptImage(File file, String saveAs) throws IOException {
         this(ImageIO.read(file), saveAs);
@@ -41,13 +36,13 @@ public class DecryptImage {
         }
     }
 
-    private String decode(String filename) throws FileNotFoundException {
+    // Decodes the image, saving it in a file at outputText/filename.txt
+    private void decode(String filename) throws FileNotFoundException {
         int sum = 0;
         PrintWriter out = new PrintWriter("outputText/" + filename + ".txt");
 
         for (int i = 0; i< this.x; i++) {
             Color curr = colors[i];
-            //sum += curr.getRed()*25 + curr.getGreen()*5 + curr.getBlue()*1;
             sum += curr.getRed()*i + curr.getGreen()*i + curr.getBlue()*i;
         }
 
@@ -56,15 +51,13 @@ public class DecryptImage {
 
         int index = this.x;
         int currSum = 0;
-        // String message = "";
         
         while(index < this.colors.length) {
-            if (index%10000 == 0) {
-                System.out.println(index);
-            }
+            // if (index%10000 == 0) {
+            //     System.out.println(index);
+            // }
             if((index-this.x) %span == 0 && (index - this.x) != 0) {
                 int val = currSum%256;
-                // message += (char)val;
                 out.write((char)val);
                 currSum = 0;
             }
@@ -72,14 +65,11 @@ public class DecryptImage {
             currSum += 25*curColor.getRed() + 5*curColor.getGreen() + 1*curColor.getBlue();
             index++;
         }
-
-        return "message";
     }
 
     public static void main(String args[]) throws IOException {
-        File file = new File("outputImages/EncryptedASCIIDragon.png");
+        File file = new File("outputImages/EncryptedDragon.png");
         BufferedImage bi = ImageIO.read(file);
         DecryptImage di = new DecryptImage(bi, "ASCIIDrag");
-        // EncryptImage cs = new EncryptImage(file, text, "limeCommunism");
     }
 }
