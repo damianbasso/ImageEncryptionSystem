@@ -13,6 +13,17 @@ To decode an encoded image, supply the decryptor main function with the filename
 
 ![Decryptor Main Function](https://github.com/Ginga17/ImageEncryptionSystem/blob/master/imgs/decrypt.png?raw=true)
 
+## Timeline of 30 hours (Underestimate, I think I spent more than 30):
+•	7 hours – research 
+
+•	8 hours – designing how system will work (math)
+
+•	6 hours – coding
+
+•	8 hours – debugging (A lot of edge cases) and errors in the code
+
+•	3 hours – testing
+
 ## Why Encrypt Messages into Images
 
 [Steganography](https://en.wikipedia.org/wiki/Steganography) is the practice of concealing a message within another message or medium of data. This can be done for a range of diffrent purposes, but the real reason this approach would be used is that it not only hides the content of the message, but can also obscure the message's existence entirely. Examples of steganography can be found throughout history and is a great technique to obscure sensitive information. These techniques often require some form of a private key or commonly shared secret among the exchanging parties that allows them to decode or extract the obscured message. 
