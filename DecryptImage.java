@@ -68,8 +68,8 @@ public class DecryptImage {
     }
 
     public static void main(String args[]) throws IOException {
-        File file = new File("outputImages/EncryptedDragon.png");
+        File file = new File("outputImages/EncryptedLadyBugManifesto.png");
         BufferedImage bi = ImageIO.read(file);
-        DecryptImage di = new DecryptImage(bi, "ASCIIDrag");
+        DecryptImage di = new DecryptImage(bi, "lady");
     }
 }

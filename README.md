@@ -2,7 +2,15 @@
 Project for COMP6841 Cyber Security 'Something Awesome' project by Damian Basso.
 
 For this project, I have designed an encryption system built on writing encoded messages into images.
-This consists of  an encryption function and its corresponding decryption function. 
+This consists of  an encryption function and its corresponding decryption function.
+
+## How to Run
+The program consists of two files with two functions which are easy to run. After downloading the repo, to run the EncryptImage.java function, simply put a text file and image in the sampleInput folder, and then call the program with them as command line arguments. You can also just write the filenames into the main function instead of the args in the below image and run it in VSCode instead.
+
+ 
+To decode an encoded image, supply the decryptor main function with the filename of the encrypted image (which should be in the output images folder), and then a filename that you want the message to be written to. Again, these can be hard written into the code instead of the args in the below image.
+
+
 
 ## Why Encrypt Messages into Images
 
