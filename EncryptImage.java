@@ -301,8 +301,8 @@ public class EncryptImage {
     }
 
     public static void main(String args[]) throws IOException {
-        File file = new File("sampleInput/Ladybug.jpg");
-        File text = new File("sampleInput/Communism.txt");
-        EncryptImage cs = new EncryptImage(file, text, "LadyBugManifesto");
+        File file = new File("sampleInput/HighResDragon.png");
+        File text = new File("sampleInput/1598400ASCII.txt");
+        EncryptImage cs = new EncryptImage(file, text, "whiteA");
     }
 }
