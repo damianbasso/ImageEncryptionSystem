@@ -7,10 +7,22 @@ This consists of  an encryption function and its corresponding decryption functi
 ## How to Run
 The program consists of two files with two functions which are easy to run. After downloading the repo, to run the EncryptImage.java function, simply put a text file and image in the sampleInput folder, and then call the program with them as command line arguments. You can also just write the filenames into the main function instead of the args in the below image and run it in VSCode instead.
 
+![Encryptor Main Function](https://github.com/Ginga17/ImageEncryptionSystem/blob/master/imgs/encrypt.png?raw=true)
  
 To decode an encoded image, supply the decryptor main function with the filename of the encrypted image (which should be in the output images folder), and then a filename that you want the message to be written to. Again, these can be hard written into the code instead of the args in the below image.
 
+![Decryptor Main Function](https://github.com/Ginga17/ImageEncryptionSystem/blob/master/imgs/decrypt.png?raw=true)
 
+## Timeline of 30 hours (Underestimate, I think I spent more than 30):
+•	7 hours – research 
+
+•	8 hours – designing how system will work (math)
+
+•	6 hours – coding
+
+•	8 hours – debugging (A lot of edge cases) and errors in the code
+
+•	3 hours – testing
 
 ## Why Encrypt Messages into Images
 
@@ -76,3 +88,22 @@ There's quite a bit that I had on the agenda to add to this project that I could
 I think a big improvement could also be made in how I store span into the encrypted image. Placing it in the first row of the image I planned to be a placeholder. I think it would be much better to find another technique to put it in, possibly distributing the value, hiding it in pixels accross the image. The decrypter would then know where these values are based on a particular pattern it uses to hide them, possibly based on the images height and/or width since these are supplied integers in the image.
 
 The biggest improvement I was hoping to get in was a method by which the message would not be encrypted linearly across the iamge, but rather distributed in different places by using primitive roots. Primitive roots are a key aspect of modular arithmetic, and they would be useful as using a primitive root means we can encode into the entire of the image without redundancy while avoiding linearity. The problem I ran into was mostly just from this being too complex as the only numbers which have primitive roots are prime numbers, powers of primes and 2\*primes. My idea was to try and find the largest of these values that have primitive roots that is less then the total size of the image, and then find the primitive root and use it to determine the order by which pixels are encoded into the image. I still think this probably would work, but I ran out of time doing the math schematics so I couldn't get to implementing
+
+## Examples
+
+Below is a demonstration of the most significant visual shift that happens from encypting characters. The first image is the base image, which is a 500 by 500 pixel white (RGB(255,255,255)) square, which is encrypted with the letter a into every pixel in the image. Letter a is chosen as it causes the biggest shift from the colour white, and hence demonstrates the biggest shift that can occur in encrypting a message using this program. Looks very similar to me, but there is actually a change. If you save the images you will see the second square is in fact RGB(250,255,252).
+
+Input:
+<kbd>![White Box input](https://github.com/Ginga17/ImageEncryptionSystem/blob/master/sampleInput/250000white.png?raw=true)</kbd>
+
+Output:
+<kbd>![White Box output](https://github.com/Ginga17/ImageEncryptionSystem/blob/master/outputImages/EncryptedWhiteAs.png?raw=true)</kbd>
+
+Here is another example with a more complex image. The second ladybug has been encrypted with the Communist Manifesto.
+
+Input:
+<kbd>![Ladybug input](https://github.com/Ginga17/ImageEncryptionSystem/blob/master/sampleInput/Ladybug.jpg?raw=true)</kbd>
+
+Output:
+<kbd>![Ladybug output](https://github.com/Ginga17/ImageEncryptionSystem/blob/master/outputImages/EncryptedLadyBugManifesto.png?raw=true)</kbd>
+
